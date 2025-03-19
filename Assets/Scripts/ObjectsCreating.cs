@@ -18,9 +18,9 @@ public class ObjectsCreating : MonoBehaviour
         _currentMaxChance = _maxChance;
     }
 
-    public void Create(Vector3 position, Vector3 scale, out List<Rigidbody> explosionHits)
+    public void Create(Vector3 position, Vector3 scale, out List<Rigidbody> explosionObjects)
     {
-        explosionHits = new List<Rigidbody>();
+        explosionObjects = new List<Rigidbody>();
         int propability = _random.Next(_maxChance + 1);
 
         if (propability > 0 && propability  <= _currentMaxChance)
@@ -30,21 +30,11 @@ public class ObjectsCreating : MonoBehaviour
             for (int i = 0; i < amount; i++)
             {
                 GameObject cube = Instantiate(_cubePrefab, position, Quaternion.identity);
-                cube.GetComponent<ObjectInitialization>().Initialise(SetScale(scale), GenerateColor());
-                explosionHits.Add(cube.GetComponent<Rigidbody>());
+                cube.GetComponent<ObjectInitialization>().Initialise(scale);
+                explosionObjects.Add(cube.GetComponent<Collider>().attachedRigidbody);
             }
-
-            _currentMaxChance /= _chanceDivider;
         }
-    }
-
-    private Vector3 SetScale(Vector3 scale)
-    {
-        return new Vector3(scale.x/2, scale.y/2, scale.z/2);
-    }
-
-    private Color GenerateColor()
-    {
-        return UnityEngine.Random.ColorHSV();
+        
+        _currentMaxChance /= _chanceDivider;
     }
 }

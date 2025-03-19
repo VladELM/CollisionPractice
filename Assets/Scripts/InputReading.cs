@@ -5,7 +5,7 @@ public class InputReading : MonoBehaviour
 {
     [SerializeField] private Camera _camera;
     [SerializeField] private float _rayLength;
-    [SerializeField] private LayerMask _ignoreRaycastLayer;
+    [SerializeField] private LayerMask _impactRaycastLayer;
     [SerializeField] private ObjectsCreating _objectsCreating;
     [SerializeField] private Exploding _exploding;
 
@@ -26,17 +26,15 @@ public class InputReading : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-           RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, _rayLength, _ignoreRaycastLayer))
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, _rayLength, _impactRaycastLayer))
             {
-                ObjectInitialization objectInitialization = hit.collider.gameObject.GetComponent<ObjectInitialization>();
-
-                if (objectInitialization)
+                if (hit.collider.gameObject.GetComponent<ObjectInitialization>())
                 {
-                    _objectsCreating.Create(hit.transform.position, hit.transform.localScale, out List<Rigidbody> explosionHits);
+                    _objectsCreating.Create(hit.transform.position, hit.transform.localScale, out List<Rigidbody> explosionObjects);
 
-                    if (explosionHits.Count > 0)
-                        _exploding.Explode(explosionHits, hit.transform.position);
+                    if (explosionObjects.Count > 0)
+                        _exploding.Explode(explosionObjects, hit.transform.position);
 
                     Destroy(hit.collider.gameObject);
                 }
