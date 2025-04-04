@@ -1,56 +1,65 @@
 using Random = System.Random;
 using UnityEngine;
 using System.Collections.Generic;
-using System;
 
 public class Spawner : MonoBehaviour
 {
+    [SerializeField] private Manager _manager;
     [SerializeField] private Cube _cube;
-    [SerializeField] private GameObject _cubePrefab;
     [SerializeField] private int _minAmount;
     [SerializeField] private int _maxAmount;
+    [SerializeField] private int _scaleDivider;
+    [SerializeField] private int _chanceDivider;
 
     private List<Rigidbody> _explosionObjects;
     private Random _random = new Random();
+    private int _maxChance;
 
-    public event Action Exploded;
+    public int RigidbodiesAmount => _explosionObjects.Count;
 
-    public void Spawn()
+    private void OnEnable()
     {
-        int propability = _random.Next(_cube.MaxChance + 1);
+        _maxChance = 100;
+        _explosionObjects = new List<Rigidbody>();
+        _manager.Spawned += Spawn;
+        _manager.Removed += RemoveRigidbodies;
+    }
 
-        if (propability > 0 && propability <= _cube.CurrentMaxChance)
+    private void OnDisable()
+    {
+        _manager.Spawned -= Spawn;
+        _manager.Removed -= RemoveRigidbodies;
+    }
+
+    private void Spawn(Vector3 position, Vector3 scale, int chance)
+    {
+        int propability = _random.Next(_maxChance + 1);
+
+        if (propability > 0 && propability <= chance)
         {
             int amount = _random.Next(_minAmount, _maxAmount);
+            int reducedChance = chance / _chanceDivider;
 
             for (int i = 0; i < amount; i++)
             {
-                GameObject cube = Instantiate(_cubePrefab, _cube.Position, Quaternion.identity);
-                cube.GetComponent<Cube>().Initialise(_cube.Scale);
-                _explosionObjects.Add(cube.GetComponent<Collider>().attachedRigidbody);
+                var cube = Instantiate(_cube, position, Quaternion.identity);
+                cube.transform.localScale = scale / _scaleDivider;
+                cube.Initialize(reducedChance);
+                
+                if (cube.TryGetComponent(out Rigidbody rigidbody))
+                    _explosionObjects.Add(rigidbody);
             }
-
-            if (_explosionObjects.Count > 0)
-                Exploded?.Invoke();
-
-            _explosionObjects.Clear();
         }
+    }
+
+    private void RemoveRigidbodies()
+    {
+        _explosionObjects.Clear();
     }
 
     public IEnumerable<Rigidbody> GetRigidbodies()
     {
         for (int i = 0; i < _explosionObjects.Count; i++)
             yield return _explosionObjects[i];
-    }
-
-    private void OnEnable()
-    {
-        _cube.Spawning += Spawn;
-        _explosionObjects = new List<Rigidbody>();
-    }
-
-    private void OnDisable()
-    {
-        _cube.Spawning -= Spawn;
     }
 }

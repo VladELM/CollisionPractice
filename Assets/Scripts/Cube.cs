@@ -1,49 +1,20 @@
-using System;
 using UnityEngine;
+
+[RequireComponent(typeof(Renderer))]
 
 public class Cube : MonoBehaviour
 {
-    [SerializeField] private int _scaleDivider;
-    [SerializeField] private int _chanceDivider;
-    [SerializeField] private string _cameraName;
+    [SerializeField] private int _chance;
 
-    private InputReader _inputReading;
-    private int _maxChance = 100;
-    private int _currentMaxChance;
-
-    public event Action Spawning;
-
-    public Vector3 Position => transform.position;
-    public Vector3 Scale => transform.localScale;
-    public int MaxChance => _maxChance;
-    public int CurrentMaxChance => _currentMaxChance;
-
-    public void Initialise(Vector3 scale)
-    {
-        transform.localScale = new Vector3(scale.x / _scaleDivider, scale.y / _scaleDivider, scale.z / _scaleDivider);
-        GetComponent<Renderer>().material.color = UnityEngine.Random.ColorHSV(); ;
-    }
-
-    public void DestroyCube()
-    {
-        Spawning?.Invoke();
-        Destroy(gameObject);
-    }
+    public int Chance => _chance;
 
     private void OnEnable()
     {
-        _inputReading = GameObject.Find(_cameraName).GetComponent<InputReader>();
-        _inputReading.Pushed += ReduceChance;
-        _currentMaxChance = _maxChance;
+        GetComponent<Renderer>().material.color = UnityEngine.Random.ColorHSV();
     }
 
-    private void OnDisable()
+    public void Initialize(int chance)
     {
-        _inputReading.Pushed -= ReduceChance;
-    }
-
-    private void ReduceChance()
-    {
-        _currentMaxChance /= _chanceDivider;
+        _chance = chance;
     }
 }

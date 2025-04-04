@@ -1,41 +1,18 @@
 using UnityEngine;
-using System;
 
 public class InputReader : MonoBehaviour
 {
-    [SerializeField] private Camera _camera;
-    [SerializeField] private float _rayLength;
-    [SerializeField] private LayerMask _impactRaycastLayer;
-
-    public event Action Pushed;
+    public delegate void Message(Vector3 position);
+    public event Message Pushed;
 
     private void Update()
     {
-        CastRay();
+        ReadMouseClick();
     }
 
-    private void CastRay()
-    {
-        Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-        Debug.DrawRay(ray.origin, ray.direction * _rayLength, Color.red);
-
-        ReadMouseClick(ray);
-    }
-
-    private void ReadMouseClick(Ray ray)
+    private void ReadMouseClick()
     {
         if (Input.GetMouseButtonDown(0))
-        {
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, _rayLength, _impactRaycastLayer))
-            {
-                if (hit.collider.gameObject.GetComponent<Cube>())
-                {
-                    Pushed?.Invoke();
-                    hit.collider.gameObject.GetComponent<Cube>().DestroyCube();
-                }
-
-            }
-        }
+            Pushed?.Invoke(Input.mousePosition);
     }
 }

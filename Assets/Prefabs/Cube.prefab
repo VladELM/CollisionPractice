@@ -12,10 +12,8 @@ GameObject:
   - component: {fileID: 2181164534439141091}
   - component: {fileID: 1250887116993318178}
   - component: {fileID: 2368976718609945343}
-  - component: {fileID: 4656223236539873713}
-  - component: {fileID: 755541580242497482}
-  - component: {fileID: 6816686949090982842}
   - component: {fileID: -8419651506020659537}
+  - component: {fileID: 4656223236539873713}
   m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
@@ -109,53 +107,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4656223236539873713
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4487394590705412157}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75db83099fb6ffe4cb196a5e6984ce03, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _scaleDivider: 2
-  _chanceDivider: 2
-  _cameraName: MainCamera
---- !u!114 &755541580242497482
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4487394590705412157}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa25b5a6b62cefc4a965ed3477e31a61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _cube: {fileID: 4656223236539873713}
-  _spawner: {fileID: 6816686949090982842}
-  _explosionForce: 700
-  _explosionRadius: 50
---- !u!114 &6816686949090982842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4487394590705412157}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c6b6e04e7b0f0443804a16de6180077, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _cube: {fileID: 4656223236539873713}
-  _cubePrefab: {fileID: 4487394590705412157}
-  _minAmount: 2
-  _maxAmount: 6
 --- !u!54 &-8419651506020659537
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -183,3 +134,16 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &4656223236539873713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4487394590705412157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75db83099fb6ffe4cb196a5e6984ce03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _chance: 0
