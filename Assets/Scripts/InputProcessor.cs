@@ -1,8 +1,10 @@
 using System.Collections;
 using UnityEngine;
 using System;
+using System.Collections.Generic;
+using Random = System.Random;
 
-public class Manager : MonoBehaviour
+public class InputProcessor : MonoBehaviour
 {
     [SerializeField] private InputReader _inputReader;
     [SerializeField] private Spawner _spawner;
@@ -10,15 +12,17 @@ public class Manager : MonoBehaviour
     [SerializeField] private float _rayLength;
     [SerializeField] private LayerMask _impactRaycastLayer;
 
-    public delegate void Spawn(Vector3 position, Vector3 scale, int chance);
-    public event Spawn Spawned;
-    public delegate void Explode(IEnumerable rigidbodies, Vector3 position);
-    public event Explode Exploded;
-    public event Action Removed;
+    private int _maxChance;
+    private Random _random;
+
+    public event Func<Vector3, Vector3, int, IEnumerable<Rigidbody>> Allowed;
+    public event Action<IEnumerable, Vector3> Spawned; 
 
     private void OnEnable()
     {
         _inputReader.Pushed += ProcessPushing;
+        _maxChance = 100;
+        _random = new Random();
     }
 
     private void OnDisable()
@@ -36,17 +40,16 @@ public class Manager : MonoBehaviour
             if (hit.transform.gameObject.TryGetComponent(out Cube cube))
             {
                 Transform cubeTransform = hit.transform;
-                Spawned?.Invoke(cubeTransform.position, cubeTransform.localScale, cube.Chance);
-                
-                if (_spawner.RigidbodiesAmount > 0)
+                Destroy(cubeTransform.gameObject);
+
+                if (_random.Next(_maxChance + 1) <= cube.Chance)
                 {
-                    Exploded?.Invoke(_spawner.GetRigidbodies(), cubeTransform.position);
-                    Removed?.Invoke();
+                    IEnumerable<Rigidbody> rigidbodies = Allowed?.Invoke(cubeTransform.position, cubeTransform.localScale, cube.Chance);
+                    Spawned?.Invoke(rigidbodies, cubeTransform.position);
                 }
 
-                Destroy(cubeTransform.gameObject);
             }
-        }
 
+        }
     }
 }
