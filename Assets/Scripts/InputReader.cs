@@ -1,11 +1,11 @@
+using System;
 using UnityEngine;
 
 public class InputReader : MonoBehaviour
 {
     [SerializeField] public int _buttonValue;
 
-    public delegate void Message(Vector3 position);
-    public event Message Pushed;
+    public event Action<Vector3> Pushed;
 
     private void Update()
     {
