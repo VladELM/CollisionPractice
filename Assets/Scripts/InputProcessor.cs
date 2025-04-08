@@ -8,15 +8,13 @@ public class InputProcessor : MonoBehaviour
 {
     [SerializeField] private InputReader _inputReader;
     [SerializeField] private Spawner _spawner;
+    [SerializeField] private Exploder _exploder;
     [SerializeField] private Camera _camera;
     [SerializeField] private float _rayLength;
     [SerializeField] private LayerMask _impactRaycastLayer;
 
     private int _maxChance;
     private Random _random;
-
-    public event Func<Vector3, Vector3, int, IEnumerable<Rigidbody>> Allowed;
-    public event Action<IEnumerable, Vector3> Spawned; 
 
     private void OnEnable()
     {
@@ -44,12 +42,10 @@ public class InputProcessor : MonoBehaviour
 
                 if (_random.Next(_maxChance + 1) <= cube.Chance)
                 {
-                    IEnumerable<Rigidbody> rigidbodies = Allowed?.Invoke(cubeTransform.position, cubeTransform.localScale, cube.Chance);
-                    Spawned?.Invoke(rigidbodies, cubeTransform.position);
+                    IEnumerable<Rigidbody> rigidbodies = _spawner.Spawn(cubeTransform.position, cubeTransform.localScale, cube.Chance);
+                    _exploder.Explode(rigidbodies, cubeTransform.position);
                 }
-
             }
-
         }
     }
 }
